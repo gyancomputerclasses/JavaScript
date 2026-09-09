@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Price Calculator</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        padding: 30px;
+    }
+
+    .calculator {
+        max-width: 1100px;
+        margin: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    }
+
+    h2 {
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .main-box {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 25px;
+    }
+
+    .products {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    th {
+        background: #f1f1f1;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 9px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .remove-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .add-btn {
+        margin-top: 15px;
+        background: #198754;
+        color: white;
+        border: none;
+        padding: 11px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .summary {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+
+    .summary h3 {
+        margin-top: 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 12px;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+        font-size: 16px;
+    }
+
+    .grand-total {
+        font-size: 24px;
+        font-weight: bold;
+        border-top: 2px solid #333;
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+
+    @media(max-width: 768px) {
+        .main-box {
+            grid-template-columns: 1fr;
+        }
+
+        .summary {
+            position: static;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+    <h2>Product Price Calculator</h2>
+
+    <div class="main-box">
+
+        <!-- LEFT SIDE -->
+        <div class="products">
+
+            <table id="productTable">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <select class="product" onchange="updatePrice(this)">
+                                <option value="Table" data-price="1500">Table</option>
+                                <option value="Chair" data-price="800">Chair</option>
+                                <option value="Bed" data-price="8000">Bed</option>
+                                <option value="Sofa" data-price="12000">Sofa</option>
+                                <option value="Almirah" data-price="7000">Almirah</option>
+                                <option value="Desk" data-price="2500">Desk</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="number"
+                                   class="qty"
+                                   value="1"
+                                   min="1"
+                                   oninput="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number"
+                                   class="price"
+                                   value="1500"
+                                   min="0"
+                                   oninput="calculate()">
+                        </td>
+
+                        <td>
+                            ₹<span class="row-total">1500</span>
+                        </td>
+
+                        <td>
+                            <button class="remove-btn"
+                                    onclick="removeRow(this)">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <button class="add-btn" onclick="addProduct()">
+                + Add Product
+            </button>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="summary">
+
+            <h3>Price Summary</h3>
+
+            <div class="price-row">
+                <span>Total Items</span>
+                <strong id="totalItems">1</strong>
+            </div>
+
+            <div class="price-row">
+                <span>Subtotal</span>
+                <strong>₹<span id="subtotal">1500</span></strong>
+            </div>
+
+            <div class="price-row">
+                <span>Discount</span>
+
+                <input type="number"
+                       id="discount"
+                       value="0"
+                       min="0"
+                       oninput="calculate()"
+                       style="width:100px;">
+            </div>
+
+            <div class="price-row grand-total">
+                <span>Grand Total</span>
+                <span>₹<span id="grandTotal">1500</span></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function updatePrice(select) {
+
+    let row = select.closest("tr");
+
+    let price = select.options[select.selectedIndex]
+                     .getAttribute("data-price");
+
+    row.querySelector(".price").value = price;
+
+    calculate();
+}
+
+
+function addProduct() {
+
+    let tableBody = document.querySelector("#productTable tbody");
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+
+        <td>
+            <select class="product" onchange="updatePrice(this)">
+
+                <option value="Table" data-price="1500">
+                    Table
+                </option>
+
+                <option value="Chair" data-price="800">
+                    Chair
+                </option>
+
+                <option value="Bed" data-price="8000">
+                    Bed
+                </option>
+
+                <option value="Sofa" data-price="12000">
+                    Sofa
+                </option>
+
+                <option value="Almirah" data-price="7000">
+                    Almirah
+                </option>
+
+                <option value="Desk" data-price="2500">
+                    Desk
+                </option>
+
+            </select>
+        </td>
+
+        <td>
+            <input type="number"
+                   class="qty"
+                   value="1"
+                   min="1"
+                   oninput="calculate()">
+        </td>
+
+        <td>
+            <input type="number"
+                   class="price"
+                   value="1500"
+                   min="0"
+                   oninput="calculate()">
+        </td>
+
+        <td>
+            ₹<span class="row-total">1500</span>
+        </td>
+
+        <td>
+            <button class="remove-btn"
+                    onclick="removeRow(this)">
+                Remove
+            </button>
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+
+    calculate();
+}
+
+
+function removeRow(button) {
+
+    button.closest("tr").remove();
+
+    calculate();
+}
+
+
+function calculate() {
+
+    let rows = document.querySelectorAll("#productTable tbody tr");
+
+    let subtotal = 0;
+    let totalItems = 0;
+
+    rows.forEach(function(row) {
+
+        let qty = parseFloat(
+            row.querySelector(".qty").value
+        ) || 0;
+
+        let price = parseFloat(
+            row.querySelector(".price").value
+        ) || 0;
+
+        let total = qty * price;
+
+        row.querySelector(".row-total").innerText =
+            total.toLocaleString("en-IN");
+
+        subtotal += total;
+
+        totalItems += qty;
+
+    });
+
+
+    let discount = parseFloat(
+        document.getElementById("discount").value
+    ) || 0;
+
+
+    let grandTotal = subtotal - discount;
+
+    if (grandTotal < 0) {
+        grandTotal = 0;
+    }
+
+
+    document.getElementById("totalItems").innerText =
+        totalItems;
+
+    document.getElementById("subtotal").innerText =
+        subtotal.toLocaleString("en-IN");
+
+    document.getElementById("grandTotal").innerText =
+        grandTotal.toLocaleString("en-IN");
+}
+
+
+calculate();
+
+</script>
+
+</body>
+</html>

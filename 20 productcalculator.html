@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Billing System</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.billing-box {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+}
+
+/* LEFT SIDE */
+
+.product-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.product-section h2 {
+    margin-top: 0;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.product {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.product:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.product .icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.product-price {
+    margin-top: 7px;
+    color: #555;
+}
+
+/* RIGHT SIDE */
+
+.bill-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.bill-section h2 {
+    margin-top: 0;
+}
+
+.bill-item {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.item-top {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.item-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.qty-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.qty {
+    min-width: 25px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.remove {
+    border: none;
+    background: #dc3545;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.summary {
+    margin-top: 20px;
+    border-top: 2px solid #222;
+    padding-top: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.grand-total {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.clear-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    background: #dc3545;
+    color: white;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 30px 0;
+}
+
+
+/* MOBILE */
+
+@media(max-width: 800px) {
+
+    .billing-box {
+        grid-template-columns: 1fr;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bill-section {
+        position: static;
+    }
+}
+
+@media(max-width: 450px) {
+
+    .product-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .product {
+        padding: 15px 5px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="billing-box">
+
+        <!-- LEFT PRODUCT LIST -->
+
+        <div class="product-section">
+
+            <h2>Products</h2>
+
+            <div class="product-grid">
+
+                <div class="product"
+                     onclick="addProduct('Table', 1500)">
+                    <div class="icon">🪑</div>
+                    <div class="product-name">Table</div>
+                    <div class="product-price">₹1,500</div>
+                </div>
+
+                <div class="product"
+                     onclick="addProduct('Chair', 800)">
+                    <div class="icon">💺</div>
+                    <div class="product-name">Chair</div>
+                    <div class="product-price">₹800</div>
+                </div>
+
+                <div class="product"
+                     onclick="addProduct('Bed', 8000)">
+                    <div class="icon">🛏️</div>
+                    <div class="product-name">Bed</div>
+                    <div class="product-price">₹8,000</div>
+                </div>
+
+                <div class="product"
+                     onclick="addProduct('Sofa', 12000)">
+                    <div class="icon">🛋️</div>
+                    <div class="product-name">Sofa</div>
+                    <div class="product-price">₹12,000</div>
+                </div>
+
+                <div class="product"
+                     onclick="addProduct('Almirah', 7000)">
+                    <div class="icon">🚪</div>
+                    <div class="product-name">Almirah</div>
+                    <div class="product-price">₹7,000</div>
+                </div>
+
+                <div class="product"
+                     onclick="addProduct('Desk', 2500)">
+                    <div class="icon">🗄️</div>
+                    <div class="product-name">Desk</div>
+                    <div class="product-price">₹2,500</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT BILL -->
+
+        <div class="bill-section">
+
+            <h2>Bill</h2>
+
+            <div id="billItems">
+
+                <div class="empty">
+                    Click a product to add it
+                </div>
+
+            </div>
+
+
+            <div class="summary">
+
+                <div class="summary-row">
+                    <span>Total Quantity</span>
+                    <strong id="totalQty">0</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong>₹<span id="subtotal">0</span></strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <input
+                        type="number"
+                        id="discount"
+                        value="0"
+                        min="0"
+                        oninput="calculateBill()"
+                        style="width:90px;padding:5px;"
+                    >
+                </div>
+
+                <div class="summary-row grand-total">
+
+                    <span>Total</span>
+
+                    <span>
+                        ₹<span id="grandTotal">0</span>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button class="clear-btn"
+                    onclick="clearBill()">
+                Clear Bill
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* BILL DATA */
+
+let cart = [];
+
+
+/* ADD PRODUCT */
+
+function addProduct(name, price) {
+
+    let existing = cart.find(item => item.name === name);
+
+    if (existing) {
+
+        // Same product clicked again
+        existing.qty++;
+
+    } else {
+
+        // New product
+        cart.push({
+            name: name,
+            price: price,
+            qty: 1
+        });
+
+    }
+
+    displayBill();
+}
+
+
+/* DISPLAY BILL */
+
+function displayBill() {
+
+    let billItems = document.getElementById("billItems");
+
+    billItems.innerHTML = "";
+
+    if (cart.length === 0) {
+
+        billItems.innerHTML = `
+            <div class="empty">
+                Click a product to add it
+            </div>
+        `;
+
+        calculateBill();
+
+        return;
+    }
+
+
+    cart.forEach((item, index) => {
+
+        let total = item.price * item.qty;
+
+        billItems.innerHTML += `
+
+            <div class="bill-item">
+
+                <div class="item-top">
+
+                    <span>
+                        ${item.name}
+                    </span>
+
+                    <span>
+                        ₹${total.toLocaleString('en-IN')}
+                    </span>
+
+                </div>
+
+
+                <div class="item-controls">
+
+                    <div>
+                        ₹${item.price.toLocaleString('en-IN')}
+                        × ${item.qty}
+                    </div>
+
+
+                    <div class="qty-box">
+
+                        <button
+                            class="qty-btn"
+                            onclick="decreaseQty(${index})">
+                            −
+                        </button>
+
+                        <span class="qty">
+                            ${item.qty}
+                        </span>
+
+                        <button
+                            class="qty-btn"
+                            onclick="increaseQty(${index})">
+                            +
+                        </button>
+
+                        <button
+                            class="remove"
+                            onclick="removeProduct(${index})">
+                            ×
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+
+    calculateBill();
+}
+
+
+/* INCREASE */
+
+function increaseQty(index) {
+
+    cart[index].qty++;
+
+    displayBill();
+}
+
+
+/* DECREASE */
+
+function decreaseQty(index) {
+
+    if (cart[index].qty > 1) {
+
+        cart[index].qty--;
+
+    } else {
+
+        cart.splice(index, 1);
+
+    }
+
+    displayBill();
+}
+
+
+/* REMOVE */
+
+function removeProduct(index) {
+
+    cart.splice(index, 1);
+
+    displayBill();
+}
+
+
+/* CALCULATE */
+
+function calculateBill() {
+
+    let subtotal = 0;
+    let totalQty = 0;
+
+
+    cart.forEach(item => {
+
+        subtotal += item.price * item.qty;
+
+        totalQty += item.qty;
+
+    });
+
+
+    let discount =
+        Number(document.getElementById("discount").value) || 0;
+
+
+    let grandTotal = subtotal - discount;
+
+
+    if (grandTotal < 0) {
+        grandTotal = 0;
+    }
+
+
+    document.getElementById("totalQty").innerText =
+        totalQty;
+
+
+    document.getElementById("subtotal").innerText =
+        subtotal.toLocaleString('en-IN');
+
+
+    document.getElementById("grandTotal").innerText =
+        grandTotal.toLocaleString('en-IN');
+
+}
+
+
+/* CLEAR BILL */
+
+function clearBill() {
+
+    cart = [];
+
+    document.getElementById("discount").value = 0;
+
+    displayBill();
+
+}
+
+</script>
+
+</body>
+</html>

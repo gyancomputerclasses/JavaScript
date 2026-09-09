@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="post">
+        <input type="text" placeholder="Full Name" id="fullname"> <br>
+        <input type="text" placeholder="Full institute" id="Fullinstitute"> <br>
+        <input type="text" placeholder="Full course" id="Fullcourse"> <br>
+        <button type="button" onclick="display()">Display</button>
+    </form>
+
+    <p><b id="name"></b> is a student of <b id="institute"></b>. do course <b id="course"></b></p>
+    <script>
+        function display(){
+            let name = document.getElementById("fullname").value;
+            let institute = document.getElementById("Fullinstitute").value;
+            let course = document.getElementById("Fullcourse").value;
+            document.getElementById("name").innerHTML=name;
+            document.getElementById("institute").innerHTML=institute;
+            document.getElementById("course").innerHTML=course;
+        }
+    </script>
+</body>
+</html>
